@@ -3,8 +3,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d">
-    <Grid>
-            
-    </Grid>
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:prism="http://prismlibrary.com/"
+             mc:Ignorable="d"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <StackPanel Margin="20">
+        <StackPanel Orientation="Horizontal">
+            <Button Style="{DynamicResource AppButton}" Command="{Binding Path=FolderBrowserDialog}">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Folder" VerticalAlignment="Center" Height="20" Width="20" />
+                    <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="Select folder" />
+                </StackPanel>
+            </Button>
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10 0 0 0" FontSize="14" ToolTip="{Binding Path=PathToFolderFull}" Text="{Binding Path=PathToFolderShort}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
+            <TextBlock VerticalAlignment="Center" Margin="1 0 0 0" FontSize="14" Text="Count of PDF files:" />
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10 0 0 0" FontSize="14" Text="{Binding Path=CountFiles}" />
+        </StackPanel>
+    </StackPanel>
 </UserControl>
