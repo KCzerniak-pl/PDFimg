@@ -16,6 +16,9 @@ namespace PDFimg.ViewModels
         private ICommand? _closeAppCommand;
         public ICommand CloseAppCommand { get => _closeAppCommand ?? (_closeAppCommand = new DelegateCommand(() => Application.Current.Shutdown())); }
 
+        // views available.
+        private PdfImgView PdfImg { get; set; } = null!;
+
         // Active view.
         private object _currentView = null!;
         public object CurrentView
@@ -24,7 +27,7 @@ namespace PDFimg.ViewModels
             set { SetProperty(ref _currentView, value); }
         }
 
-        // Marker for selected option in the menu.
+        // Marker for selected item in the menu.
         private Thickness _slidebarMarkMargin;
         public Thickness SlidebarMarkMargin
         {
@@ -38,6 +41,13 @@ namespace PDFimg.ViewModels
             set
             {
                 SlidebarMarkMargin = new Thickness(0, 65 * value, 0, 0);
+
+                switch (value)
+                {
+                    default:
+                        CurrentView = PdfImg ?? (PdfImg = new PdfImgView());
+                        break;
+                }
             }
         }
     }
