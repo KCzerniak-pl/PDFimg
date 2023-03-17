@@ -21,5 +21,41 @@
             <TextBlock VerticalAlignment="Center" Margin="1 0 0 0" FontSize="14" Text="Count of PDF files:" />
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10 0 0 0" FontSize="14" Text="{Binding Path=CountFiles}" />
         </StackPanel>
+
+        <DataGrid ItemsSource="{Binding DataPage}" MaxHeight="200" Margin="0 25 0 0" AutoGenerateColumns="False" CanUserAddRows="False" CanUserSortColumns="False" CanUserReorderColumns="False" IsReadOnly="True" VerticalScrollBarVisibility="Visible" ColumnHeaderStyle="{DynamicResource AppDataGridColumnHeader}" RowStyle="{DynamicResource AppDataGridRow}" CellStyle="{DynamicResource AppDataGridCell}">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Name:" Width="260">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock VerticalAlignment="Center" Text="{Binding Path=Name}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Style="{DynamicResource AppButton}" Command="{Binding Path=DataContext.EditDataPageCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="FileEdit" VerticalAlignment="Center" Height="20" Width="20" />
+                                    <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="Edit" />
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Style="{DynamicResource AppButton}" Command="{Binding Path=DataContext.RemoveDataPageCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="FileDocumentRemove" VerticalAlignment="Center" Height="20" Width="20" />
+                                    <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="Remove" />
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
     </StackPanel>
 </UserControl>
