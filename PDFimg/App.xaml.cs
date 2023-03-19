@@ -1,4 +1,6 @@
-﻿using PDFimg.Views;
+﻿using PDFimg.ViewModels.Dialogs;
+using PDFimg.Views;
+using PDFimg.Views.Dialogs;
 using Prism.DryIoc;
 using Prism.Ioc;
 using System.Windows;
@@ -17,7 +19,7 @@ namespace PDFimg
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-
+            containerRegistry.RegisterDialog<DataPageView, DataPageViewModel>("DataPageDialog");
         }
     }
 }

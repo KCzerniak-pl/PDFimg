@@ -27,7 +27,7 @@
                 <DataGridTemplateColumn Header="Name:" Width="260">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock VerticalAlignment="Center" Text="{Binding Path=Name}"/>
+                            <TextBlock VerticalAlignment="Center" Text="{Binding Path=Name}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -57,5 +57,11 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+
+        <StackPanel HorizontalAlignment="Right">
+            <Button Width="35" Height="35" Margin="0 -5 10 0" Padding="0" Background="#0069C0" BorderBrush="{x:Null}" Foreground="#FAFAFA" Cursor="Arrow" Style="{StaticResource MaterialDesignIconButton}" Command="{Binding Path=AddDataPageDialogCommand}">
+                <materialDesign:PackIcon Kind="Plus" Width="25" Height="25" />
+            </Button>
+        </StackPanel>
     </StackPanel>
 </UserControl>

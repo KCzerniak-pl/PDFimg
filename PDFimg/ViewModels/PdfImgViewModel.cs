@@ -1,6 +1,7 @@
 ﻿using PDFimg.Models;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,15 @@ namespace PDFimg.ViewModels
 {
     class PdfImgViewModel : BindableBase
     {
+        // Dialog service.
+        private readonly IDialogService _dialogService;
+
+        public PdfImgViewModel(IDialogService dialogService)
+        {
+            // Dependency injection from Prism DryIoc.
+            _dialogService = dialogService;
+        }
+
         // Path to the selected folder.
         private string _pathToFolderFull = default!;
         public string PathToFolderFull
@@ -49,6 +59,10 @@ namespace PDFimg.ViewModels
         private ICommand? _removeDataPageCommand;
         public ICommand RemoveDataPageCommand { get => _removeDataPageCommand ?? (_removeDataPageCommand = new DelegateCommand<DataPageModel>(ExecuteRemoveItemCommand)); }
 
+        // Button to open the data page dialog.
+        private ICommand? _addDataPageDialogCommand;
+        public ICommand AddDataPageDialogCommand { get => _addDataPageDialogCommand ?? (_addDataPageDialogCommand = new DelegateCommand(ExecuteAddDataPageDialog)); }
+
         // Folder browser dialog.
         private void ExecuteFolderBrowserDialog()
         {
@@ -71,6 +85,12 @@ namespace PDFimg.ViewModels
         void ExecuteRemoveItemCommand(DataPageModel dataPage)
         {
             DataPage.Remove(dataPage);
+        }
+
+        // Data page dialog.
+        private void ExecuteAddDataPageDialog()
+        {
+            _dialogService.ShowDialog("DataPageDialog");
         }
     }
 }
