@@ -11,13 +11,5 @@ namespace PDFimg.Views
         {
             InitializeComponent();
         }
-
-        private void HeaderLoaded(object sender, RoutedEventArgs e)
-        {
-            TitleBar.MouseLeftButtonDown += (s, e) =>
-            {
-                DragMove();
-            };
-        }
     }
 }

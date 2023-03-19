@@ -7,52 +7,31 @@
         xmlns:prism="http://prismlibrary.com/"
         mc:Ignorable="d"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Height="400" Width="675"
+        Title="PDFimg" Height="400" Width="675"
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.Foreground="#FAFAFA"
-        ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="CenterScreen">
-    <Border BorderThickness="1" BorderBrush="#222222">
-        <DockPanel Loaded="HeaderLoaded">
-            <Grid x:Name="TitleBar" DockPanel.Dock="Top" Height="30" Background="#0069C0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock VerticalAlignment="Center" FontSize="14" FontWeight="Normal" Margin="10 0 0 0" Text="PDFimg" />
-                </StackPanel>
+        ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
+    <StackPanel Orientation="Horizontal">
+        <Grid Width="100" Background="#2E2E2E">
+            <StackPanel x:Name="SidebarMark" Height="65" Width="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{Binding SlidebarMarkMargin}" Background="#FF4081" />
+            <ListView SelectedIndex="{Binding SidebarSelectedIndex, Mode=OneWayToSource}">
+                <ListViewItem HorizontalContentAlignment="Center" Height="{Binding ActualHeight, ElementName=SidebarMark}" IsSelected="True">
+                    <StackPanel>
+                        <materialDesign:PackIcon Kind="ClipboardCheckMultipleOutline" Width="25" Height="25" HorizontalAlignment="Center" />
+                        <TextBlock HorizontalAlignment="Center" FontSize="14" Text="Set PDF" />
+                    </StackPanel>
+                </ListViewItem>
+                <ListViewItem HorizontalContentAlignment="Center" Height="{Binding ActualHeight, ElementName=SidebarMark}">
+                    <StackPanel>
+                        <materialDesign:PackIcon Kind="ClipboardCheckMultipleOutline" Width="25" Height="25" HorizontalAlignment="Center" />
+                        <TextBlock HorizontalAlignment="Center" FontSize="14" Text="Config" />
+                    </StackPanel>
+                </ListViewItem>
+            </ListView>
+        </Grid>
 
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-                    <Button Width="30" Height="30" Padding="0" ToolTip="Minimize" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FAFAFA" Cursor="Arrow" Style="{StaticResource MaterialDesignOutlinedLightButton}" Command="{Binding Path=MinimizeAppCommand}">
-                        <materialDesign:PackIcon Kind="WindowMinimize" Width="25" Height="25" />
-                    </Button>
-                    <Button Width="30" Height="30" Padding="0" ToolTip="Close" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FAFAFA" Cursor="Arrow" Style="{StaticResource MaterialDesignOutlinedLightButton}" Command="{Binding Path=CloseAppCommand}">
-                        <materialDesign:PackIcon Kind="Power" Width="25" Height="25" />
-                    </Button>
-                </StackPanel>
-            </Grid>
-
-            <Grid DockPanel.Dock="Left" Width="100" Background="#2E2E2E">
-                <StackPanel x:Name="SidebarMark" Height="65" Width="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{Binding SlidebarMarkMargin}" Background="#FF4081" />
-                <ListView SelectedIndex="{Binding SidebarSelectedIndex, Mode=OneWayToSource}">
-                    <ListViewItem HorizontalContentAlignment="Center" Height="{Binding ActualHeight, ElementName=SidebarMark}" IsSelected="True">
-                        <StackPanel>
-                            <materialDesign:PackIcon Kind="ClipboardCheckMultipleOutline" Width="25" Height="25" HorizontalAlignment="Center" />
-                            <TextBlock HorizontalAlignment="Center" FontSize="14" Text="Set PDF" />
-                        </StackPanel>
-                    </ListViewItem>
-                    <ListViewItem HorizontalContentAlignment="Center" Height="{Binding ActualHeight, ElementName=SidebarMark}">
-                        <StackPanel>
-                            <materialDesign:PackIcon Kind="ClipboardCheckMultipleOutline" Width="25" Height="25" HorizontalAlignment="Center" />
-                            <TextBlock HorizontalAlignment="Center" FontSize="14" Text="Config" />
-                        </StackPanel>
-                    </ListViewItem>
-                </ListView>
-            </Grid>
-
-            <Grid>
-                <ContentControl Content="{Binding CurrentView}" />
-            </Grid>
-        </DockPanel>
-    </Border>
+        <Grid>
+            <ContentControl Content="{Binding CurrentView}" />
+        </Grid>
+    </StackPanel>
 </Window>
