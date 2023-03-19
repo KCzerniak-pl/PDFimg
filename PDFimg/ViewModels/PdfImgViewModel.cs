@@ -4,9 +4,7 @@ using Prism.Mvvm;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Windows.Controls;
 using System.Windows.Input;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace PDFimg.ViewModels
 {
