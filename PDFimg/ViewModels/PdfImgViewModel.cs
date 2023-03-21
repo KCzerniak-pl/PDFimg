@@ -18,6 +18,8 @@ namespace PDFimg.ViewModels
         {
             // Dependency injection from Prism DryIoc.
             _dialogService = dialogService;
+
+            DataPage = new ObservableCollection<DataPageModel>();
         }
 
         // Path to the selected folder.
@@ -82,7 +84,7 @@ namespace PDFimg.ViewModels
         }
 
         // Remove chosen data from collection.
-        void ExecuteRemoveItemCommand(DataPageModel dataPage)
+        private void ExecuteRemoveItemCommand(DataPageModel dataPage)
         {
             DataPage.Remove(dataPage);
         }
@@ -90,7 +92,19 @@ namespace PDFimg.ViewModels
         // Data page dialog.
         private void ExecuteAddDataPageDialog()
         {
-            _dialogService.ShowDialog("DataPageDialog");
+            var parameters = new DialogParameters();
+            parameters.Add("Title", "Add new data page");
+
+            _dialogService.ShowDialog("DataPageDialog", parameters, callback =>
+            {
+                if (callback.Result == ButtonResult.OK)
+                {
+                    var dataPage = callback.Parameters.GetValue<DataPageModel>("DataPage");
+
+                    // Add new item to the collection.
+                    DataPage.Add(dataPage);
+                }
+            });
         }
     }
 }

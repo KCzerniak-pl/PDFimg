@@ -13,14 +13,15 @@
         <Style TargetType="Window">
             <Setter Property="ResizeMode" Value="CanMinimize" />
             <Setter Property="ShowInTaskbar" Value="False" />
-            <Setter Property="SizeToContent" Value="WidthAndHeight" />
+            <Setter Property="Width" Value="400" />
+            <Setter Property="SizeToContent" Value="Height" />
             <Setter Property="prism:Dialog.WindowStartupLocation" Value="CenterScreen" />
         </Style>
     </prism:Dialog.WindowStyle>
     <StackPanel Margin="10 15 10 15">
         <StackPanel>
             <TextBlock Margin="5 0 0 0" FontSize="14" Text="Name:" />
-            <TextBox Padding="4" MaxLength="50" FontSize="14" materialDesign:TextFieldAssist.DecorationVisibility="Hidden" Text="{Binding Path=Name}" />
+            <TextBox Padding="4" MaxLength="50" FontSize="14" materialDesign:TextFieldAssist.DecorationVisibility="Hidden" Text="{Binding Path=DataPage.Name, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Margin="0 25 0 0">
