@@ -68,7 +68,7 @@ namespace PDFimg.ViewModels
         // Folder browser dialog.
         private void ExecuteFolderBrowserDialog()
         {
-            // Create a folder browser dialog using 'Ookii Dialogs'
+            // Create a folder browser dialog using the 'Ookii Dialogs'
             var dialog = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
             if (dialog.ShowDialog().GetValueOrDefault())
             {
@@ -89,7 +89,7 @@ namespace PDFimg.ViewModels
             DataPage.Remove(dataPage);
         }
 
-        // Data page dialog.
+        // Data page dialog using the 'Prism'.
         private void ExecuteAddDataPageDialog()
         {
             var parameters = new DialogParameters();
