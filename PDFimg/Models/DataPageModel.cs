@@ -1,6 +1,6 @@
 ﻿namespace PDFimg.Models
 {
-    internal class DataPageModel
+    public class DataPageModel
     {
         public string Name { get; set; } = default!;
         public string PathToImage { get; set; } = default!;

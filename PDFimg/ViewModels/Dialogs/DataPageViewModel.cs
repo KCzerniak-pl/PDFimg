@@ -3,11 +3,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
-using System.ComponentModel;
-using System.IO;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace PDFimg.ViewModels.Dialogs
 {

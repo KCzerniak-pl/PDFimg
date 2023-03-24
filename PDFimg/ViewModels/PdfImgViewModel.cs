@@ -1,8 +1,10 @@
-﻿using PDFimg.Models;
+﻿using PDFimg.Helpers;
+using PDFimg.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
@@ -20,6 +22,12 @@ namespace PDFimg.ViewModels
             _dialogService = dialogService;
 
             DataPage = new ObservableCollection<DataPageModel>();
+            // Add a delegate to the event associated with collection item count change.
+            DataPage.CollectionChanged += ContentCollectionChanged;
+
+            PdfFiles = new ObservableCollection<string>();
+            // Add a delegate to the event associated with collection item count change.
+            PdfFiles.CollectionChanged += ContentCollectionChanged;
         }
 
         // Path to the selected folder.
@@ -37,6 +45,14 @@ namespace PDFimg.ViewModels
             set { SetProperty(ref _pathToFolderShort, value); }
         }
 
+        // Collection with PDF.
+        private ObservableCollection<string> _pdfFiles = default!;
+        public ObservableCollection<string> PdfFiles
+        {
+            get { return _pdfFiles; }
+            set { SetProperty(ref _pdfFiles, value); }
+        }
+
         // Total files in the selected folder.
         private string _countFiles = "0";
         public string CountFiles
@@ -45,12 +61,20 @@ namespace PDFimg.ViewModels
             set { SetProperty(ref _countFiles, value); }
         }
 
-        // Collection of data for chosen pages in PDF files.
-        private ObservableCollection<DataPageModel> _dataPage = default!;
+        // Collection of PDF files.
+        internal ObservableCollection<DataPageModel> _dataPage = default!;
         public ObservableCollection<DataPageModel> DataPage
         {
             get { return _dataPage; }
             set { SetProperty(ref _dataPage, value); }
+        }
+
+        // Property that determines whether the add images to PDF button is enabled.
+        private bool _isEnabledAddImagesToPdf = false;
+        public bool IsEnabledAddImagesToPdf
+        {
+            get { return _isEnabledAddImagesToPdf; }
+            set { SetProperty(ref _isEnabledAddImagesToPdf, value); }
         }
 
         // Button to open the folder browser dialog.
@@ -65,6 +89,10 @@ namespace PDFimg.ViewModels
         private ICommand? _addDataPageDialogCommand;
         public ICommand AddDataPageDialogCommand { get => _addDataPageDialogCommand ?? (_addDataPageDialogCommand = new DelegateCommand(ExecuteAddDataPageDialog)); }
 
+        // Button to execute tasks that add images to PDF.
+        private ICommand? _addImagesToPdf;
+        public ICommand AddImagesToPdf { get => _addImagesToPdf ?? (_addImagesToPdf = new DelegateCommand(ExecuteAddImagesToPdf).ObservesCanExecute(() => IsEnabledAddImagesToPdf)); }
+
         // Folder browser dialog.
         private void ExecuteFolderBrowserDialog()
         {
@@ -77,9 +105,11 @@ namespace PDFimg.ViewModels
                 PathToFolderFull = dialog.SelectedPath;
                 PathToFolderShort = PathToFolderFull.Length > maxChar ? $"{PathToFolderFull.Substring(0, maxChar)}..." : PathToFolderFull;
 
-                // Count files (with chosen extension) in the selected folder.
-                int countFiles = (from file in Directory.EnumerateFiles(dialog.SelectedPath, "*.pdf", SearchOption.TopDirectoryOnly) select file).Count();
-                CountFiles = countFiles.ToString();
+                // Add PDF to collection.
+                PdfFiles.AddRange(from file in Directory.EnumerateFiles(dialog.SelectedPath, "*.pdf", SearchOption.TopDirectoryOnly) select file);
+
+                // Count elements in collection.
+                CountFiles = PdfFiles.Count().ToString();
             }
         }
 
@@ -92,9 +122,11 @@ namespace PDFimg.ViewModels
         // Data page dialog using the 'Prism'.
         private void ExecuteAddDataPageDialog()
         {
+            // Create parameters.
             var parameters = new DialogParameters();
             parameters.Add("Title", "Add new data page");
 
+            // Open modal dialog.
             _dialogService.ShowDialog("DataPageDialog", parameters, callback =>
             {
                 if (callback.Result == ButtonResult.OK)
@@ -105,6 +137,25 @@ namespace PDFimg.ViewModels
                     DataPage.Add(dataPage);
                 }
             });
+        }
+
+        // Add images to PDF.
+        private void ExecuteAddImagesToPdf()
+        {
+            AddImageToPdf.Execute(PdfFiles.ToList(), DataPage.ToList());
+        }
+
+        // Delegate related to updating the collection.
+        private void ContentCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (PdfFiles != null && PdfFiles.Any() && DataPage != null && DataPage.Any())
+            {
+                IsEnabledAddImagesToPdf = true;
+            }
+            else
+            {
+                IsEnabledAddImagesToPdf = false;
+            }
         }
     }
 }

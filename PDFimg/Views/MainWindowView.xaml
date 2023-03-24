@@ -7,12 +7,12 @@
         xmlns:prism="http://prismlibrary.com/"
         mc:Ignorable="d"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="PDFimg" Height="400" Width="675"
+        Title="PDFimg" Height="440" Width="675"
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.Foreground="#FAFAFA"
         ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
-    <StackPanel Orientation="Horizontal">
-        <Grid Width="100" Background="#2E2E2E">
+    <DockPanel>
+        <Grid DockPanel.Dock="Left" Width="100" Background="#2E2E2E">
             <StackPanel x:Name="SidebarMark" Height="65" Width="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{Binding SlidebarMarkMargin}" Background="#FF4081" />
             <ListView SelectedIndex="{Binding SidebarSelectedIndex, Mode=OneWayToSource}">
                 <ListViewItem HorizontalContentAlignment="Center" Height="{Binding ActualHeight, ElementName=SidebarMark}" IsSelected="True">
@@ -30,8 +30,8 @@
             </ListView>
         </Grid>
 
-        <Grid>
+        <Grid DockPanel.Dock="Right">
             <ContentControl Content="{Binding CurrentView}" />
         </Grid>
-    </StackPanel>
+    </DockPanel>
 </Window>
