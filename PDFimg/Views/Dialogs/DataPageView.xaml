@@ -21,7 +21,7 @@
     <StackPanel Margin="10 15 10 15">
         <StackPanel>
             <TextBlock Margin="5 0 0 0" FontSize="14" Text="Name:" />
-            <TextBox Padding="4" MaxLength="50" FontSize="14" materialDesign:TextFieldAssist.DecorationVisibility="Hidden" Text="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Padding="4" MaxLength="50" FontSize="14" materialDesign:TextFieldAssist.DecorationVisibility="Hidden" Text="{Binding Path=DataPage.Name, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Margin="0 25 0 0">
@@ -31,19 +31,19 @@
                     <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="Select image" />
                 </StackPanel>
             </Button>
-            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10 0 0 0" FontSize="14" ToolTip="{Binding Path=PathToImageFull}" Text="{Binding Path=PathToImageShort}" />
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10 0 0 0" FontSize="14" ToolTip="{Binding Path=DataPage.PathToImage}" Text="{Binding Path=PathToImage}" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Margin="0 15 0 0">
             <TextBlock VerticalAlignment="Center" Margin="5 0 0 0" FontSize="14" Text="Pages:" />
-            <TextBox Margin="5 0 0 0" Padding="4" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="249" FontSize="14" materialDesign:TextFieldAssist.DecorationVisibility="Hidden" Text="{Binding Path=PageNumbers, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Margin="5 0 0 0" Padding="4" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="249" FontSize="14" materialDesign:TextFieldAssist.DecorationVisibility="Hidden" Text="{Binding Path=DataPage.PageNumbers, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Margin="0 15 0 0">
             <TextBlock VerticalAlignment="Center" Margin="5 0 0 0" FontSize="14" Text="Position X:" />
-            <TextBox Margin="5 0 0 0" Padding="4" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="75" FontSize="14" materialDesign:TextFieldAssist.DecorationVisibility="Hidden" Text="{Binding Path=PositionX, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Margin="5 0 0 0" Padding="4" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="75" FontSize="14" materialDesign:TextFieldAssist.DecorationVisibility="Hidden" Text="{Binding Path=DataPage.PositionX, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock VerticalAlignment="Center" Margin="5 0 0 0" FontSize="14" Text="Position Y:" />
-            <TextBox Margin="5 0 0 0" Padding="4" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="75" FontSize="14" materialDesign:TextFieldAssist.DecorationVisibility="Hidden" Text="{Binding Path=PositionY, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Margin="5 0 0 0" Padding="4" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="75" FontSize="14" materialDesign:TextFieldAssist.DecorationVisibility="Hidden" Text="{Binding Path=DataPage.PositionY, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 25 0 0" >

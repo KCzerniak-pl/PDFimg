@@ -3,6 +3,7 @@ using PDFimg.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
@@ -81,6 +82,10 @@ namespace PDFimg.ViewModels
         private ICommand? _folderBrowserDialog;
         public ICommand FolderBrowserDialog { get => _folderBrowserDialog ?? (_folderBrowserDialog = new DelegateCommand(ExecuteFolderBrowserDialog)); }
 
+        // Button to edit chosen data from collection
+        private ICommand? _editDataPageCommand;
+        public ICommand EditDataPageCommand { get => _editDataPageCommand ?? (_editDataPageCommand = new DelegateCommand<DataPageModel>(ExecuteEditItemCommand)); }
+
         // Button to remove chosen data from collection
         private ICommand? _removeDataPageCommand;
         public ICommand RemoveDataPageCommand { get => _removeDataPageCommand ?? (_removeDataPageCommand = new DelegateCommand<DataPageModel>(ExecuteRemoveItemCommand)); }
@@ -101,9 +106,8 @@ namespace PDFimg.ViewModels
             if (dialog.ShowDialog().GetValueOrDefault())
             {
                 // Get path to selected folder.
-                int maxChar = 55;
                 PathToFolderFull = dialog.SelectedPath;
-                PathToFolderShort = PathToFolderFull.Length > maxChar ? $"{PathToFolderFull.Substring(0, maxChar)}..." : PathToFolderFull;
+                PathToFolderShort = PathToFolderFull.CutString(55);
 
                 // Add PDF to collection.
                 PdfFiles.AddRange(from file in Directory.EnumerateFiles(dialog.SelectedPath, "*.pdf", SearchOption.TopDirectoryOnly) select file);
@@ -111,6 +115,37 @@ namespace PDFimg.ViewModels
                 // Count elements in collection.
                 CountFiles = PdfFiles.Count().ToString();
             }
+        }
+
+        // Edit chosen data from collection.
+        private void ExecuteEditItemCommand(DataPageModel dataPage)
+        {
+            // Create parameters.
+            var parameters = new DialogParameters();
+            parameters.Add("Title", "Edit data page");
+            parameters.Add("DataPage", dataPage);
+
+            var item = DataPage.IndexOf(dataPage);
+
+            // Open modal dialog.
+            _dialogService.ShowDialog("DataPageDialog", parameters, callback =>
+            {
+                if (callback.Result == ButtonResult.OK)
+                {
+                    var updateDataPage = callback.Parameters.GetValue<DataPageModel>("DataPage");
+
+                    // Find and update item in collection.
+                    var dataPage = DataPage.FirstOrDefault(d => d.Guid == updateDataPage.Guid);
+                    if (dataPage != null)
+                    {
+                        dataPage.Name = updateDataPage.Name;
+                        dataPage.PathToImage = updateDataPage.PathToImage;
+                        dataPage.PageNumbers = updateDataPage.PageNumbers;
+                        dataPage.PositionX = updateDataPage.PositionX;
+                        dataPage.PositionY = updateDataPage.PositionY;
+                    }
+                }
+            });
         }
 
         // Remove chosen data from collection.
@@ -134,6 +169,7 @@ namespace PDFimg.ViewModels
                     var dataPage = callback.Parameters.GetValue<DataPageModel>("DataPage");
 
                     // Add new item to the collection.
+                    dataPage.Guid = Guid.NewGuid();
                     DataPage.Add(dataPage);
                 }
             });

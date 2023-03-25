@@ -1,4 +1,5 @@
-﻿using PDFimg.Models;
+﻿using PDFimg.Helpers;
+using PDFimg.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
@@ -9,46 +10,23 @@ namespace PDFimg.ViewModels.Dialogs
 {
     internal class DataPageViewModel : BindableBase, IDialogAware
     {
-        private string _name = default!;
-        public string Name
+        public DataPageViewModel()
         {
-            get { return _name!; }
-            set { SetProperty(ref _name, value); }
+            DataPage = new DataPageModel();
         }
 
-        private string _pathToImageFull = default!;
-        public string PathToImageFull
+        private DataPageModel _dataPage = default!;
+        public DataPageModel DataPage
         {
-            get { return _pathToImageFull; }
-            set { SetProperty(ref _pathToImageFull, value); }
+            get { return _dataPage!; }
+            set { SetProperty(ref _dataPage, value); }
         }
 
-        private string _pathToImageShort = "Click the button to select a image.";
-        public string PathToImageShort
+        private string _pathToImage = "Click the button to select a image.";
+        public string PathToImage
         {
-            get { return _pathToImageShort; }
-            set { SetProperty(ref _pathToImageShort, value); }
-        }
-
-        private string _pageNumbers = default!;
-        public string PageNumbers
-        {
-            get { return _pageNumbers; }
-            set { SetProperty(ref _pageNumbers, value); }
-        }
-
-        private int _positionX = default!;
-        public int PositionX
-        {
-            get { return _positionX; }
-            set { SetProperty(ref _positionX, value); }
-        }
-
-        private int _positionY = default!;
-        public int PositionY
-        {
-            get { return _positionY; }
-            set { SetProperty(ref _positionY, value); }
+            get { return _pathToImage; }
+            set { SetProperty(ref _pathToImage, value); }
         }
 
         // Button to open the file browser dialog.
@@ -57,8 +35,13 @@ namespace PDFimg.ViewModels.Dialogs
 
         // Button to save data page.
         private ICommand? _saveDataPage;
-        public ICommand SaveDataPage { get => _saveDataPage ?? (_saveDataPage = new DelegateCommand(ExecuteSaveDataPage, CanExecuteSaveDataPage)
-                .ObservesProperty(() => Name).ObservesProperty(() => PathToImageFull).ObservesProperty(() => PageNumbers)); }
+        public ICommand SaveDataPage
+        {
+            get => _saveDataPage ?? (_saveDataPage = new DelegateCommand(ExecuteSaveDataPage, CanExecuteSaveDataPage)
+                .ObservesProperty(() => DataPage.Name)
+                .ObservesProperty(() => DataPage.PathToImage)
+                .ObservesProperty(() => DataPage.PageNumbers));
+        }
 
         // Save data page.
         private void ExecuteSaveDataPage()
@@ -67,22 +50,14 @@ namespace PDFimg.ViewModels.Dialogs
 
             // Create callback parameters.
             var parameters = new DialogParameters();
-            var dataPage = new DataPageModel()
-            {
-                Name = this.Name,
-                PathToImage = this.PathToImageFull,
-                PageNumbers = this.PageNumbers,
-                PositionX = this.PositionX,
-                PositionY = this.PositionY
-            };
-            parameters.Add("DataPage", dataPage);
+            parameters.Add("DataPage", DataPage);
 
             RequestClose?.Invoke(new DialogResult(buttonResult, parameters));
         }
 
         private bool CanExecuteSaveDataPage()
         {
-            if (String.IsNullOrEmpty(Name) || string.IsNullOrEmpty(PathToImageFull) || string.IsNullOrEmpty(PageNumbers))
+            if (String.IsNullOrEmpty(DataPage.Name) || string.IsNullOrEmpty(DataPage.PathToImage) || string.IsNullOrEmpty(DataPage.PageNumbers))
             {
                 return false;
             }
@@ -99,9 +74,9 @@ namespace PDFimg.ViewModels.Dialogs
             if (dialog.ShowDialog().GetValueOrDefault())
             {
                 // Get path to selected file.
-                int maxChar = 30;
-                PathToImageFull = dialog.FileName;
-                PathToImageShort = PathToImageFull.Length > maxChar ? $"{PathToImageFull.Substring(0, maxChar)}..." : PathToImageFull;
+                DataPage.PathToImage = dialog.FileName;
+                string.IsNullOrEmpty(DataPage.PathToImage);
+                PathToImage = DataPage.PathToImage.CutString(30);
             }
         }
 
@@ -122,6 +97,12 @@ namespace PDFimg.ViewModels.Dialogs
         public void OnDialogOpened(IDialogParameters parameters)
         {
             Title = parameters.GetValue<string>("Title");
+            var dataPage = parameters.GetValue<DataPageModel>("DataPage");
+            if (dataPage != null)
+            {
+                DataPage = dataPage;
+                PathToImage = DataPage.PathToImage.CutString(30);
+            }
         }
     }
 }
