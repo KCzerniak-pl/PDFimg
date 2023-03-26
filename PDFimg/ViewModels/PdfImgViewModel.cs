@@ -3,9 +3,9 @@ using PDFimg.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
-using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
@@ -26,43 +26,28 @@ namespace PDFimg.ViewModels
             // Add a delegate to the event associated with collection item count change.
             DataPage.CollectionChanged += ContentCollectionChanged;
 
-            PdfFiles = new ObservableCollection<string>();
-            // Add a delegate to the event associated with collection item count change.
-            PdfFiles.CollectionChanged += ContentCollectionChanged;
+            PdfFiles = new PdfFilesModel();
+            // Add a delegate to the event associated with property change.
+            PdfFiles.PropertyChanged += ContentPropertyChanged;
         }
 
-        // Path to the selected folder.
-        private string _pathToFolderFull = default!;
-        public string PathToFolderFull
-        {
-            get { return _pathToFolderFull; }
-            set { SetProperty(ref _pathToFolderFull, value); }
-        }
-
-        private string _pathToFolderShort = "Click the button to select a folder containing PDF files.";
-        public string PathToFolderShort
-        {
-            get { return _pathToFolderShort; }
-            set { SetProperty(ref _pathToFolderShort, value); }
-        }
-
-        // Collection with PDF.
-        private ObservableCollection<string> _pdfFiles = default!;
-        public ObservableCollection<string> PdfFiles
+        // Collection of PDF files.
+        private PdfFilesModel _pdfFiles = default!;
+        public PdfFilesModel PdfFiles
         {
             get { return _pdfFiles; }
             set { SetProperty(ref _pdfFiles, value); }
         }
 
-        // Total files in the selected folder.
-        private string _countFiles = "0";
-        public string CountFiles
+        // Path to the selected folder.
+        private string _pathToFolder = "Click the button to select a folder containing PDF files.";
+        public string PathToFolder
         {
-            get { return _countFiles; }
-            set { SetProperty(ref _countFiles, value); }
+            get { return _pathToFolder; }
+            set { SetProperty(ref _pathToFolder, value); }
         }
 
-        // Collection of PDF files.
+        // Collection of data page.
         internal ObservableCollection<DataPageModel> _dataPage = default!;
         public ObservableCollection<DataPageModel> DataPage
         {
@@ -106,14 +91,14 @@ namespace PDFimg.ViewModels
             if (dialog.ShowDialog().GetValueOrDefault())
             {
                 // Get path to selected folder.
-                PathToFolderFull = dialog.SelectedPath;
-                PathToFolderShort = PathToFolderFull.CutString(55);
+                PdfFiles.PathToFolder = dialog.SelectedPath;
+                PathToFolder = PdfFiles.PathToFolder.CutString(55);
 
                 // Add PDF to collection.
-                PdfFiles.AddRange(from file in Directory.EnumerateFiles(dialog.SelectedPath, "*.pdf", SearchOption.TopDirectoryOnly) select file);
+                PdfFiles.Files = Directory.EnumerateFiles(dialog.SelectedPath, "*.pdf", SearchOption.TopDirectoryOnly).ToList();
 
                 // Count elements in collection.
-                CountFiles = PdfFiles.Count().ToString();
+                PdfFiles.CountFiles = PdfFiles.Files.Count();
             }
         }
 
@@ -169,7 +154,6 @@ namespace PDFimg.ViewModels
                     var dataPage = callback.Parameters.GetValue<DataPageModel>("DataPage");
 
                     // Add new item to the collection.
-                    dataPage.Guid = Guid.NewGuid();
                     DataPage.Add(dataPage);
                 }
             });
@@ -178,13 +162,26 @@ namespace PDFimg.ViewModels
         // Add images to PDF.
         private void ExecuteAddImagesToPdf()
         {
-            AddImageToPdf.Execute(PdfFiles.ToList(), DataPage.ToList());
+            AddImageToPdf.Execute(PdfFiles.Files, DataPage);
         }
 
         // Delegate related to updating the collection.
         private void ContentCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            if (PdfFiles != null && PdfFiles.Any() && DataPage != null && DataPage.Any())
+            if (PdfFiles.Files != null && PdfFiles.Files.Any() && DataPage != null && DataPage.Any())
+            {
+                IsEnabledAddImagesToPdf = true;
+            }
+            else
+            {
+                IsEnabledAddImagesToPdf = false;
+            }
+        }
+
+        // Delegate related to updating the property in object.
+        private void ContentPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (PdfFiles.Files != null && PdfFiles.Files.Any() && DataPage != null && DataPage.Any())
             {
                 IsEnabledAddImagesToPdf = true;
             }

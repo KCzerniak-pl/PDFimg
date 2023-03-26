@@ -12,7 +12,7 @@ namespace PDFimg.Helpers
     public static class AddImageToPdf
     {
         // Add image to pdf using the 'iText7'.
-        public static void Execute(List<string> pdfFiles, List<DataPageModel> dataPage)
+        public static void Execute(ICollection<string> pdfFiles, ICollection<DataPageModel> dataPage)
         {
             foreach (var inputPdf in pdfFiles)
             {
@@ -33,11 +33,11 @@ namespace PDFimg.Helpers
                     // Count pages on the input PDF.
                     int numberOfpages = pdfDocument.GetNumberOfPages();
 
-                    // Iterate through the list of data page.
+                    // Iterate through the collection of data page.
                     foreach (var item in dataPage)
                     {
                         // Validate the page numbers.
-                        List<int> pageNumbersList = ValidatePageNumbers(item.PageNumbers);
+                        ICollection<int> pageNumbersCollection = ValidatePageNumbers(item.PageNumbers);
 
                         if (File.Exists(item.PathToImage))
                         {
@@ -45,7 +45,7 @@ namespace PDFimg.Helpers
                             Image image = new Image(ImageDataFactory.Create(item.PathToImage));
 
                             // Iterate through the list of page numbers.
-                            foreach (var page in pageNumbersList)
+                            foreach (var page in pageNumbersCollection)
                             {
                                 if (page <= numberOfpages)
                                 {
@@ -68,20 +68,20 @@ namespace PDFimg.Helpers
             }
         }
 
-        private static List<int> ValidatePageNumbers(string pageNumbers)
+        private static ICollection<int> ValidatePageNumbers(string pageNumbers)
         {
             // Array of characters that will be used as separators.
             char[] separatorsArr = new char[] { ',' };
 
             // Validate the input string of page numbers and create a sorted list of int.
             int page = default!;
-            List<int> pageNumbersList = pageNumbers.Split(separatorsArr)
+            ICollection<int> pageNumbersCollection = pageNumbers.Split(separatorsArr)
                 .Where(s => int.TryParse(s, out page))
                 .Select(s => page)
                 .OrderBy(s => s)
                 .ToList();
 
-            return pageNumbersList;
+            return pageNumbersCollection;
         }
     }
 }

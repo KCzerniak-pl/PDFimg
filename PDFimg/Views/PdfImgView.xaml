@@ -20,11 +20,11 @@
                         <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="Select folder" />
                     </StackPanel>
                 </Button>
-                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10 0 0 0" FontSize="14" ToolTip="{Binding Path=PathToFolderFull}" Text="{Binding Path=PathToFolderShort}" />
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10 0 0 0" FontSize="14" ToolTip="{Binding Path=PdfFiles.PathToFolder}" Text="{Binding Path=PathToFolder}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
                 <TextBlock VerticalAlignment="Center" Margin="1 0 0 0" FontSize="14" Text="Count of PDF files:" />
-                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10 0 0 0" FontSize="14" Text="{Binding Path=CountFiles}" />
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10 0 0 0" FontSize="14" Text="{Binding Path=PdfFiles.CountFiles}" />
             </StackPanel>
 
             <DataGrid ItemsSource="{Binding DataPage}" MaxHeight="200" Margin="0 25 0 0" AutoGenerateColumns="False" CanUserAddRows="False" CanUserSortColumns="False" CanUserReorderColumns="False" IsReadOnly="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden" ColumnHeaderStyle="{DynamicResource AppDataGridColumnHeader}" RowStyle="{DynamicResource AppDataGridRow}" CellStyle="{DynamicResource AppDataGridCell}">

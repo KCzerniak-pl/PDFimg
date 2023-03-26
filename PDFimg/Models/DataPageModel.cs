@@ -1,15 +1,16 @@
-﻿using System;
+﻿using PDFimg.Interfaces;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace PDFimg.Models
 {
-    public class DataPageModel : INotifyPropertyChanged
+    public class DataPageModel : INotifyPropertyChanged, IDeepCopy<DataPageModel>
     {
         // Declare the event.
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public Guid Guid { get; set; }
+        public Guid Guid { get; init; }
 
         private string _name = default!;
         public string Name
@@ -54,6 +55,20 @@ namespace PDFimg.Models
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        // Make a deep copy of the current object.
+        public DataPageModel DeepCopy()
+        {
+            return new DataPageModel
+            {
+                Guid = this.Guid,
+                Name = this.Name,
+                PathToImage = this.PathToImage,
+                PageNumbers = this.PageNumbers,
+                PositionX = this.PositionX,
+                PositionY = this.PositionY
+            };
         }
     }
 }

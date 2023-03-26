@@ -12,7 +12,7 @@ namespace PDFimg.ViewModels.Dialogs
     {
         public DataPageViewModel()
         {
-            DataPage = new DataPageModel();
+            DataPage = new DataPageModel() { Guid = Guid.NewGuid() };
         }
 
         private DataPageModel _dataPage = default!;
@@ -100,7 +100,8 @@ namespace PDFimg.ViewModels.Dialogs
             var dataPage = parameters.GetValue<DataPageModel>("DataPage");
             if (dataPage != null)
             {
-                DataPage = dataPage;
+                // Make a copy of the DataPageModel.
+                DataPage = dataPage.DeepCopy();
                 PathToImage = DataPage.PathToImage.CutString(30);
             }
         }
