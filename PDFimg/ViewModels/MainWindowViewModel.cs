@@ -18,6 +18,7 @@ namespace PDFimg.ViewModels
 
         // views available.
         private PdfImgView PdfImg { get; set; } = null!;
+        private ConfigView Config { get; set; } = null!;
 
         // Active view.
         private object _currentView = null!;
@@ -44,6 +45,9 @@ namespace PDFimg.ViewModels
 
                 switch (value)
                 {
+                    case 1:
+                        CurrentView = Config ?? (Config = new ConfigView());
+                        break;
                     default:
                         CurrentView = PdfImg ?? (PdfImg = new PdfImgView());
                         break;

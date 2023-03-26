@@ -1,60 +1,46 @@
 ﻿using PDFimg.Interfaces;
+using Prism.Mvvm;
 using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace PDFimg.Models
 {
-    public class DataPageModel : INotifyPropertyChanged, IDeepCopy<DataPageModel>
+    public class DataPageModel : BindableBase, IDeepCopy<DataPageModel>
     {
-        // Declare the event.
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         public Guid Guid { get; init; }
 
         private string _name = default!;
         public string Name
         {
             get { return _name; }
-            set { _name = value; OnPropertyChanged(); }
+            set { _name = value; RaisePropertyChanged(); }
         }
 
         private string _pathToImage = default!;
         public string PathToImage
         {
             get { return _pathToImage; }
-            set { _pathToImage = value; OnPropertyChanged(); }
+            set { _pathToImage = value; RaisePropertyChanged(); }
         }
 
         private string _pageNumbers = default!;
         public string PageNumbers
         {
             get { return _pageNumbers; }
-            set { _pageNumbers = value; OnPropertyChanged(); }
+            set { _pageNumbers = value; RaisePropertyChanged(); }
         }
 
         private int _positionX;
         public int PositionX
         {
             get { return _positionX; }
-            set { _positionX = value; OnPropertyChanged(); }
+            set { _positionX = value; RaisePropertyChanged(); }
         }
 
         private int _positionY;
         public int PositionY
         {
             get { return _positionY; }
-            set { _positionY = value; OnPropertyChanged(); }
-        }
-
-        // Create the OnPropertyChanged method to raise the event.
-        // The calling member's name will be used as the parameter.
-        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            if (!string.IsNullOrEmpty(propertyName))
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
+            set { _positionY = value; RaisePropertyChanged(); }
         }
 
         // Make a deep copy of the current object.
