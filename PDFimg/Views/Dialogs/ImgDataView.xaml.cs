@@ -3,11 +3,11 @@
 namespace PDFimg.Views.Dialogs
 {
     /// <summary>
-    /// Interaction logic for DataPageView.xaml
+    /// Interaction logic for ImgDataView.xaml
     /// </summary>
-    public partial class DataPageView : UserControl
+    public partial class ImgDataView : UserControl
     {
-        public DataPageView()
+        public ImgDataView()
         {
             InitializeComponent();
         }

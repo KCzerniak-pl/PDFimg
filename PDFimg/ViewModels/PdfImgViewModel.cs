@@ -3,7 +3,6 @@ using PDFimg.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
@@ -22,21 +21,21 @@ namespace PDFimg.ViewModels
             // Dependency injection from Prism DryIoc.
             _dialogService = dialogService;
 
-            DataPage = new ObservableCollection<DataPageModel>();
-            // Add a delegate to the event associated with collection item count change.
-            DataPage.CollectionChanged += ContentCollectionChanged;
+            PdfData = new PdfDataModel();
 
-            PdfFiles = new PdfFilesModel();
             // Add a delegate to the event associated with property change.
-            PdfFiles.PropertyChanged += ContentPropertyChanged;
+            PdfData.PropertyChanged += ContentPropertyChanged;
+
+            // Add a delegate to the event associated with collection item count change.
+            PdfData.ImgData.CollectionChanged += ContentCollectionChanged;
         }
 
-        // Collection of PDF files.
-        private PdfFilesModel _pdfFiles = default!;
-        public PdfFilesModel PdfFiles
+        // PDF and image data.
+        private PdfDataModel _pdfData = default!;
+        public PdfDataModel PdfData
         {
-            get { return _pdfFiles; }
-            set { SetProperty(ref _pdfFiles, value); }
+            get { return _pdfData; }
+            set { SetProperty(ref _pdfData, value); }
         }
 
         // Path to the selected folder.
@@ -45,14 +44,6 @@ namespace PDFimg.ViewModels
         {
             get { return _pathToFolder; }
             set { SetProperty(ref _pathToFolder, value); }
-        }
-
-        // Collection of data page.
-        internal ObservableCollection<DataPageModel> _dataPage = default!;
-        public ObservableCollection<DataPageModel> DataPage
-        {
-            get { return _dataPage; }
-            set { SetProperty(ref _dataPage, value); }
         }
 
         // Property that determines whether the add images to PDF button is enabled.
@@ -67,17 +58,17 @@ namespace PDFimg.ViewModels
         private ICommand? _folderBrowserDialog;
         public ICommand FolderBrowserDialog { get => _folderBrowserDialog ?? (_folderBrowserDialog = new DelegateCommand(ExecuteFolderBrowserDialog)); }
 
-        // Button to edit chosen data from collection
-        private ICommand? _editDataPageCommand;
-        public ICommand EditDataPageCommand { get => _editDataPageCommand ?? (_editDataPageCommand = new DelegateCommand<DataPageModel>(ExecuteEditItemCommand)); }
+        // button to edit chosen data from collection
+        private ICommand? _editImgDataCommand;
+        public ICommand EditImgDataCommand { get => _editImgDataCommand ?? (_editImgDataCommand = new DelegateCommand<ImgDataModel>(ExecuteEditImgDataCommand)); }
 
         // Button to remove chosen data from collection
-        private ICommand? _removeDataPageCommand;
-        public ICommand RemoveDataPageCommand { get => _removeDataPageCommand ?? (_removeDataPageCommand = new DelegateCommand<DataPageModel>(ExecuteRemoveItemCommand)); }
+        private ICommand? _removeImgDataCommand;
+        public ICommand RemoveImgDataCommand { get => _removeImgDataCommand ?? (_removeImgDataCommand = new DelegateCommand<ImgDataModel>(ExecuteRemoveImgDataCommand)); }
 
-        // Button to open the data page dialog.
-        private ICommand? _addDataPageDialogCommand;
-        public ICommand AddDataPageDialogCommand { get => _addDataPageDialogCommand ?? (_addDataPageDialogCommand = new DelegateCommand(ExecuteAddDataPageDialog)); }
+        // Button to open the image data dialog.
+        private ICommand? _addImgDataDialogCommand;
+        public ICommand AddImgDataDialogCommand { get => _addImgDataDialogCommand ?? (_addImgDataDialogCommand = new DelegateCommand(ExecuteAddImgDataDialog)); }
 
         // Button to execute tasks that add images to PDF.
         private ICommand? _addImagesToPdf;
@@ -91,70 +82,69 @@ namespace PDFimg.ViewModels
             if (dialog.ShowDialog().GetValueOrDefault())
             {
                 // Get path to selected folder.
-                PdfFiles.PathToFolder = dialog.SelectedPath;
-                PathToFolder = PdfFiles.PathToFolder.CutString(55);
+                PdfData.PathToFolder = dialog.SelectedPath;
+                PathToFolder = PdfData.PathToFolder.CutString(55);
 
                 // Add PDF to collection.
-                PdfFiles.Files = Directory.EnumerateFiles(dialog.SelectedPath, "*.pdf", SearchOption.TopDirectoryOnly).ToList();
+                PdfData.Files = Directory.EnumerateFiles(dialog.SelectedPath, "*.pdf", SearchOption.TopDirectoryOnly).ToList();
 
                 // Count elements in collection.
-                PdfFiles.CountFiles = PdfFiles.Files.Count();
+                PdfData.CountFiles = PdfData.Files.Count();
             }
         }
 
         // Edit chosen data from collection.
-        private void ExecuteEditItemCommand(DataPageModel dataPage)
+        private void ExecuteEditImgDataCommand(ImgDataModel imgData)
         {
             // Create parameters.
             var parameters = new DialogParameters();
-            parameters.Add("Title", "Edit data page");
-            parameters.Add("DataPage", dataPage);
-
-            var item = DataPage.IndexOf(dataPage);
+            parameters.Add("Title", "Edit image data");
+            parameters.Add("ImgData", imgData);
 
             // Open modal dialog.
-            _dialogService.ShowDialog("DataPageDialog", parameters, callback =>
+            _dialogService.ShowDialog("ImgDataDialog", parameters, callback =>
             {
                 if (callback.Result == ButtonResult.OK)
                 {
-                    var updateDataPage = callback.Parameters.GetValue<DataPageModel>("DataPage");
+                    // Update the image data.
+                    var updateImgData = callback.Parameters.GetValue<ImgDataModel>("ImgData");
 
-                    // Find and update item in collection.
-                    var dataPage = DataPage.FirstOrDefault(d => d.Guid == updateDataPage.Guid);
-                    if (dataPage != null)
+                    if (imgData.Guid == updateImgData.Guid)
                     {
-                        dataPage.Name = updateDataPage.Name;
-                        dataPage.PathToImage = updateDataPage.PathToImage;
-                        dataPage.PageNumbers = updateDataPage.PageNumbers;
-                        dataPage.PositionX = updateDataPage.PositionX;
-                        dataPage.PositionY = updateDataPage.PositionY;
+                        imgData.Name = updateImgData.Name;
+                        imgData.PathToImage = updateImgData.PathToImage;
+                        imgData.PageNumbers = updateImgData.PageNumbers;
+                        imgData.PositionX = updateImgData.PositionX;
+                        imgData.PositionY = updateImgData.PositionY;
                     }
                 }
             });
         }
 
         // Remove chosen data from collection.
-        private void ExecuteRemoveItemCommand(DataPageModel dataPage)
+        private void ExecuteRemoveImgDataCommand(ImgDataModel imgData)
         {
-            DataPage.Remove(dataPage);
+            PdfData.ImgData.Remove(imgData);
         }
 
-        // Data page dialog using the 'Prism'.
-        private void ExecuteAddDataPageDialog()
+        // Image data dialog using the 'Prism'.
+        private void ExecuteAddImgDataDialog()
         {
             // Create parameters.
             var parameters = new DialogParameters();
-            parameters.Add("Title", "Add new data page");
+            parameters.Add("Title", "Add new image data");
 
             // Open modal dialog.
-            _dialogService.ShowDialog("DataPageDialog", parameters, callback =>
+            _dialogService.ShowDialog("ImgDataDialog", parameters, callback =>
             {
                 if (callback.Result == ButtonResult.OK)
                 {
-                    var dataPage = callback.Parameters.GetValue<DataPageModel>("DataPage");
-
                     // Add new item to the collection.
-                    DataPage.Add(dataPage);
+                    var imgData = callback.Parameters.GetValue<ImgDataModel>("ImgData");
+                    if (imgData != null)
+                    {
+                        PdfData.ImgData.Add(imgData);
+                    }
                 }
             });
         }
@@ -162,26 +152,25 @@ namespace PDFimg.ViewModels
         // Add images to PDF.
         private void ExecuteAddImagesToPdf()
         {
-            AddImageToPdf.Execute(PdfFiles.Files, DataPage);
-        }
-
-        // Delegate related to updating the collection.
-        private void ContentCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (PdfFiles.Files != null && PdfFiles.Files.Any() && DataPage != null && DataPage.Any())
-            {
-                IsEnabledAddImagesToPdf = true;
-            }
-            else
-            {
-                IsEnabledAddImagesToPdf = false;
-            }
+            AddImageToPdf.Execute(PdfData.Files, PdfData.ImgData);
         }
 
         // Delegate related to updating the property in object.
         private void ContentPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (PdfFiles.Files != null && PdfFiles.Files.Any() && DataPage != null && DataPage.Any())
+            SetEnabledAddImagesToPdf();
+        }
+
+        // Delegate related to updating the collection.
+        private void ContentCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            SetEnabledAddImagesToPdf();
+        }
+
+        // Set IsEnabledAddImagesToPdf method.
+        private void SetEnabledAddImagesToPdf()
+        {
+            if (PdfData.Files != null && PdfData.Files.Any() && PdfData.ImgData != null && PdfData.ImgData.Any())
             {
                 IsEnabledAddImagesToPdf = true;
             }

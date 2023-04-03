@@ -4,7 +4,7 @@ using System;
 
 namespace PDFimg.Models
 {
-    public class DataPageModel : BindableBase, IDeepCopy<DataPageModel>
+    public class ImgDataModel : BindableBase, IDeepCopy<ImgDataModel>
     {
         public Guid Guid { get; init; }
 
@@ -44,9 +44,9 @@ namespace PDFimg.Models
         }
 
         // Make a deep copy of the current object.
-        public DataPageModel DeepCopy()
+        public ImgDataModel DeepCopy()
         {
-            return new DataPageModel
+            return new ImgDataModel
             {
                 Guid = this.Guid,
                 Name = this.Name,

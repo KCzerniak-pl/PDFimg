@@ -12,7 +12,7 @@ namespace PDFimg.Helpers
     public static class AddImageToPdf
     {
         // Add image to pdf using the 'iText7'.
-        public static void Execute(ICollection<string> pdfFiles, ICollection<DataPageModel> dataPage)
+        public static void Execute(ICollection<string> pdfFiles, ICollection<ImgDataModel> imgData)
         {
             foreach (var inputPdf in pdfFiles)
             {
@@ -33,8 +33,8 @@ namespace PDFimg.Helpers
                     // Count pages on the input PDF.
                     int numberOfpages = pdfDocument.GetNumberOfPages();
 
-                    // Iterate through the collection of data page.
-                    foreach (var item in dataPage)
+                    // Iterate through the collection of image data.
+                    foreach (var item in imgData)
                     {
                         // Validate the page numbers.
                         ICollection<int> pageNumbersCollection = ValidatePageNumbers(item.PageNumbers);

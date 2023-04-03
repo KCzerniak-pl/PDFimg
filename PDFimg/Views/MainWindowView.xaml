@@ -13,7 +13,7 @@
         ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
     <DockPanel>
         <Grid DockPanel.Dock="Left" Width="100" Background="#2E2E2E">
-            <StackPanel x:Name="SidebarMark" Height="65" Width="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{Binding SlidebarMarkMargin}" Background="#FF4081" />
+            <StackPanel x:Name="SidebarMark" Height="65" Width="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{Binding SlidebarMarkMargin}" Background="#FF5722" />
             <ListView SelectedIndex="{Binding SidebarSelectedIndex, Mode=OneWayToSource}">
                 <ListViewItem HorizontalContentAlignment="Center" Height="{Binding ActualHeight, ElementName=SidebarMark}" IsSelected="True">
                     <StackPanel>

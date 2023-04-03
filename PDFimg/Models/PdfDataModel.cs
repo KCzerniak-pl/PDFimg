@@ -1,10 +1,17 @@
 ﻿using Prism.Mvvm;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace PDFimg.Models
 {
-    public class PdfFilesModel : BindableBase
+    public class PdfDataModel : BindableBase
     {
+        public PdfDataModel()
+        {
+            Files = new List<string>();
+            ImgData = new ObservableCollection<ImgDataModel>();
+        }
+
         private string _pathToFolder = default!;
         public string PathToFolder
         {
@@ -24,6 +31,13 @@ namespace PDFimg.Models
         {
             get { return _countFiles; }
             set { _countFiles = value; RaisePropertyChanged(); }
+        }
+
+        private ObservableCollection<ImgDataModel> _imgData = default!;
+        public ObservableCollection<ImgDataModel> ImgData
+        {
+            get { return _imgData; }
+            set { _imgData = value; RaisePropertyChanged(); }
         }
     }
 }

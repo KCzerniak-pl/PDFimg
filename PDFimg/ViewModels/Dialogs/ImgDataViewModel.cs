@@ -4,22 +4,24 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
+using System.IO;
 using System.Windows.Input;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace PDFimg.ViewModels.Dialogs
 {
-    internal class DataPageViewModel : BindableBase, IDialogAware
+    internal class ImgDataViewModel : BindableBase, IDialogAware
     {
-        public DataPageViewModel()
+        public ImgDataViewModel()
         {
-            DataPage = new DataPageModel() { Guid = Guid.NewGuid() };
+            ImgData = new ImgDataModel() { Guid = Guid.NewGuid() };
         }
 
-        private DataPageModel _dataPage = default!;
-        public DataPageModel DataPage
+        private ImgDataModel _imgData = default!;
+        public ImgDataModel ImgData
         {
-            get { return _dataPage!; }
-            set { SetProperty(ref _dataPage, value); }
+            get { return _imgData!; }
+            set { SetProperty(ref _imgData, value); }
         }
 
         private string _pathToImage = "Click the button to select a image.";
@@ -33,31 +35,31 @@ namespace PDFimg.ViewModels.Dialogs
         private ICommand? _fileBrowserDialog;
         public ICommand FileBrowserDialog { get => _fileBrowserDialog ?? (_fileBrowserDialog = new DelegateCommand(ExecuteFileBrowserDialog)); }
 
-        // Button to save data page.
-        private ICommand? _saveDataPage;
-        public ICommand SaveDataPage
+        // Button to save image data.
+        private ICommand? _saveImageData;
+        public ICommand SaveImageData
         {
-            get => _saveDataPage ?? (_saveDataPage = new DelegateCommand(ExecuteSaveDataPage, CanExecuteSaveDataPage)
-                .ObservesProperty(() => DataPage.Name)
-                .ObservesProperty(() => DataPage.PathToImage)
-                .ObservesProperty(() => DataPage.PageNumbers));
+            get => _saveImageData ?? (_saveImageData = new DelegateCommand(ExecuteSaveImageData, CanExecuteSaveImageData)
+                .ObservesProperty(() => ImgData.Name)
+                .ObservesProperty(() => ImgData.PathToImage)
+                .ObservesProperty(() => ImgData.PageNumbers));
         }
 
-        // Save data page.
-        private void ExecuteSaveDataPage()
+        // Save image data.
+        private void ExecuteSaveImageData()
         {
             var buttonResult = ButtonResult.OK;
 
             // Create callback parameters.
             var parameters = new DialogParameters();
-            parameters.Add("DataPage", DataPage);
+            parameters.Add("ImgData", ImgData);
 
             RequestClose?.Invoke(new DialogResult(buttonResult, parameters));
         }
 
-        private bool CanExecuteSaveDataPage()
+        private bool CanExecuteSaveImageData()
         {
-            if (String.IsNullOrEmpty(DataPage.Name) || string.IsNullOrEmpty(DataPage.PathToImage) || string.IsNullOrEmpty(DataPage.PageNumbers))
+            if (String.IsNullOrEmpty(ImgData.Name) || string.IsNullOrEmpty(ImgData.PathToImage) || string.IsNullOrEmpty(ImgData.PageNumbers))
             {
                 return false;
             }
@@ -74,9 +76,11 @@ namespace PDFimg.ViewModels.Dialogs
             if (dialog.ShowDialog().GetValueOrDefault())
             {
                 // Get path to selected file.
-                DataPage.PathToImage = dialog.FileName;
-                string.IsNullOrEmpty(DataPage.PathToImage);
-                PathToImage = DataPage.PathToImage.CutString(30);
+                ImgData.PathToImage = dialog.FileName;
+
+                // Get selected file name.
+                var fileName = Path.GetFileName(ImgData.PathToImage);
+                PathToImage = fileName.CutString(30);
             }
         }
 
@@ -97,12 +101,17 @@ namespace PDFimg.ViewModels.Dialogs
         public void OnDialogOpened(IDialogParameters parameters)
         {
             Title = parameters.GetValue<string>("Title");
-            var dataPage = parameters.GetValue<DataPageModel>("DataPage");
-            if (dataPage != null)
+
+            // If the image data is being updated.
+            var imgData = parameters.GetValue<ImgDataModel>("ImgData");
+            if (imgData != null)
             {
-                // Make a copy of the DataPageModel.
-                DataPage = dataPage.DeepCopy();
-                PathToImage = DataPage.PathToImage.CutString(30);
+                // Make a copy the object.
+                ImgData = imgData.DeepCopy();
+
+                // Get selected file name.
+                var fileName = Path.GetFileName(ImgData.PathToImage);
+                PathToImage = fileName.CutString(30);
             }
         }
     }

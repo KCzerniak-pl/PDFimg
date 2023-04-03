@@ -19,7 +19,7 @@ namespace PDFimg
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterDialog<DataPageView, DataPageViewModel>("DataPageDialog");
+            containerRegistry.RegisterDialog<ImgDataView, ImgDataViewModel>("ImgDataDialog");
         }
     }
 }
