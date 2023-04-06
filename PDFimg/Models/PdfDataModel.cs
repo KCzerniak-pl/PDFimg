@@ -1,4 +1,5 @@
 ﻿using Prism.Mvvm;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -10,6 +11,15 @@ namespace PDFimg.Models
         {
             Files = new List<string>();
             ImgData = new ObservableCollection<ImgDataModel>();
+        }
+
+        public Guid Guid { get; set; }
+
+        private string _name = default!;
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; RaisePropertyChanged(); }
         }
 
         private string _pathToFolder = default!;

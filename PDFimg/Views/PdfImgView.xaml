@@ -14,7 +14,7 @@
         </Grid.RowDefinitions>
         <StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Button Style="{DynamicResource AppButton}" Command="{Binding Path=FolderBrowserDialog}">
+                <Button Style="{DynamicResource AppButton}" Command="{Binding Path=FolderBrowserDialogCommand}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Folder" VerticalAlignment="Center" Height="20" Width="20" />
                         <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="Select folder" />
@@ -73,7 +73,7 @@
         </StackPanel>
 
         <StackPanel Grid.Row="1">
-            <Button Style="{DynamicResource AppButton}" Background="#FF5722"  Command="{Binding Path=AddImagesToPdf}">
+            <Button Style="{DynamicResource AppButton}" Background="#FF5722"  Command="{Binding Path=AddImagesToPdfCommand}">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="CogPlay" VerticalAlignment="Center" Height="20" Width="20" />
                     <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="Execute tasks" />

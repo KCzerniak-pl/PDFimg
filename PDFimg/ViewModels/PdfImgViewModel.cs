@@ -55,8 +55,8 @@ namespace PDFimg.ViewModels
         }
 
         // Button to open the folder browser dialog.
-        private ICommand? _folderBrowserDialog;
-        public ICommand FolderBrowserDialog { get => _folderBrowserDialog ?? (_folderBrowserDialog = new DelegateCommand(ExecuteFolderBrowserDialog)); }
+        private ICommand? _folderBrowserDialogCommand;
+        public ICommand FolderBrowserDialogCommand { get => _folderBrowserDialogCommand ?? (_folderBrowserDialogCommand = new DelegateCommand(ExecuteFolderBrowserDialog)); }
 
         // button to edit chosen data from collection
         private ICommand? _editImgDataCommand;
@@ -71,8 +71,8 @@ namespace PDFimg.ViewModels
         public ICommand AddImgDataDialogCommand { get => _addImgDataDialogCommand ?? (_addImgDataDialogCommand = new DelegateCommand(ExecuteAddImgDataDialog)); }
 
         // Button to execute tasks that add images to PDF.
-        private ICommand? _addImagesToPdf;
-        public ICommand AddImagesToPdf { get => _addImagesToPdf ?? (_addImagesToPdf = new DelegateCommand(ExecuteAddImagesToPdf).ObservesCanExecute(() => IsEnabledAddImagesToPdf)); }
+        private ICommand? _addImagesToPdfCommand;
+        public ICommand AddImagesToPdfCommand { get => _addImagesToPdfCommand ?? (_addImagesToPdfCommand = new DelegateCommand(ExecuteAddImagesToPdf).ObservesCanExecute(() => IsEnabledAddImagesToPdf)); }
 
         // Folder browser dialog.
         private void ExecuteFolderBrowserDialog()
@@ -167,7 +167,7 @@ namespace PDFimg.ViewModels
             SetEnabledAddImagesToPdf();
         }
 
-        // Set IsEnabledAddImagesToPdf method.
+        // Set the method to enable/disable the button for adding images to a PDF.
         private void SetEnabledAddImagesToPdf()
         {
             if (PdfData.Files != null && PdfData.Files.Any() && PdfData.ImgData != null && PdfData.ImgData.Any())

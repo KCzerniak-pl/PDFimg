@@ -6,7 +6,6 @@ using Prism.Services.Dialogs;
 using System;
 using System.IO;
 using System.Windows.Input;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace PDFimg.ViewModels.Dialogs
 {
@@ -32,14 +31,14 @@ namespace PDFimg.ViewModels.Dialogs
         }
 
         // Button to open the file browser dialog.
-        private ICommand? _fileBrowserDialog;
-        public ICommand FileBrowserDialog { get => _fileBrowserDialog ?? (_fileBrowserDialog = new DelegateCommand(ExecuteFileBrowserDialog)); }
+        private ICommand? _fileBrowserDialogCommand;
+        public ICommand FileBrowserDialogCommand { get => _fileBrowserDialogCommand ?? (_fileBrowserDialogCommand = new DelegateCommand(ExecuteFileBrowserDialog)); }
 
         // Button to save image data.
-        private ICommand? _saveImageData;
-        public ICommand SaveImageData
+        private ICommand? _saveImageDataCommand;
+        public ICommand SaveImageDataCommand
         {
-            get => _saveImageData ?? (_saveImageData = new DelegateCommand(ExecuteSaveImageData, CanExecuteSaveImageData)
+            get => _saveImageDataCommand ?? (_saveImageDataCommand = new DelegateCommand(ExecuteSaveImageData, CanExecuteSaveImageData)
                 .ObservesProperty(() => ImgData.Name)
                 .ObservesProperty(() => ImgData.PathToImage)
                 .ObservesProperty(() => ImgData.PageNumbers));
