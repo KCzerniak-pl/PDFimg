@@ -7,7 +7,7 @@
         xmlns:prism="http://prismlibrary.com/"
         mc:Ignorable="d"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="PDFimg" Height="440" Width="675"
+        Title="PDFimg" Height="485" Width="675"
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.Foreground="#FAFAFA"
         ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">

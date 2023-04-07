@@ -13,7 +13,9 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <StackPanel>
-            <StackPanel Orientation="Horizontal">
+            <ComboBox Grid.Column="0" ItemsSource="{Binding Path=JsonFilesCollection}" DisplayMemberPath="Name" materialDesign:TextFieldAssist.DecorationVisibility="Hidden" materialDesign:HintAssist.Hint="Select your stored data" SelectedItem="{Binding Path=SelectedJsonFile, Mode=TwoWay}" />
+
+            <StackPanel Orientation="Horizontal" Margin="0 25 0 0">
                 <Button Style="{DynamicResource AppButton}" Command="{Binding Path=FolderBrowserDialogCommand}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Folder" VerticalAlignment="Center" Height="20" Width="20" />

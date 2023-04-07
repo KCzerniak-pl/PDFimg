@@ -6,41 +6,46 @@ namespace PDFimg.Models
 {
     public class ImgDataModel : BindableBase, IDeepCopy<ImgDataModel>
     {
-        public Guid Guid { get; init; }
+        private Guid _guid;
+        public Guid Guid
+        {
+            get { return _guid; }
+            init { SetProperty(ref _guid, value); }
+        }
 
         private string _name = default!;
         public string Name
         {
             get { return _name; }
-            set { _name = value; RaisePropertyChanged(); }
+            set { SetProperty(ref _name, value); }
         }
 
         private string _pathToImage = default!;
         public string PathToImage
         {
             get { return _pathToImage; }
-            set { _pathToImage = value; RaisePropertyChanged(); }
+            set { SetProperty(ref _pathToImage, value); }
         }
 
         private string _pageNumbers = default!;
         public string PageNumbers
         {
             get { return _pageNumbers; }
-            set { _pageNumbers = value; RaisePropertyChanged(); }
+            set { SetProperty(ref _pageNumbers, value); }
         }
 
         private int _positionX;
         public int PositionX
         {
             get { return _positionX; }
-            set { _positionX = value; RaisePropertyChanged(); }
+            set { SetProperty(ref _positionX, value); }
         }
 
         private int _positionY;
         public int PositionY
         {
             get { return _positionY; }
-            set { _positionY = value; RaisePropertyChanged(); }
+            set { SetProperty(ref _positionY, value); }
         }
 
         // Make a deep copy of the current object.
