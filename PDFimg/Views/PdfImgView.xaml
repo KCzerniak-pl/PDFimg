@@ -12,9 +12,34 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <StackPanel>
-            <ComboBox Grid.Column="0" ItemsSource="{Binding Path=JsonFilesCollection}" DisplayMemberPath="Name" materialDesign:TextFieldAssist.DecorationVisibility="Hidden" materialDesign:HintAssist.Hint="Select your stored data" SelectedItem="{Binding Path=SelectedJsonFile, Mode=TwoWay}" />
-
+        <StackPanel Grid.Row="0">
+            <ComboBox Grid.Column="0" ItemsSource="{Binding Path=JsonFilesCollection}" DisplayMemberPath="Name" materialDesign:TextFieldAssist.DecorationVisibility="Hidden" materialDesign:HintAssist.Hint="Select your stored data" SelectedItem="{Binding Path=SelectedJsonFile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <Grid Margin="0 10 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Style="{DynamicResource AppButton}" Command="{Binding Path=JsonSaveAsCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="CogPlay" VerticalAlignment="Center" Height="20" Width="20" />
+                        <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="Save as" />
+                    </StackPanel>
+                </Button>
+                <Button Grid.Column="1" Style="{DynamicResource AppButton}" Command="{Binding Path=JsonUpdateCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="CogPlay" VerticalAlignment="Center" Height="20" Width="20" />
+                        <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="Update" />
+                    </StackPanel>
+                </Button>
+                <Button Grid.Column="2" Style="{DynamicResource AppButton}" Command="{Binding Path=JsonRemoveCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="CogPlay" VerticalAlignment="Center" Height="20" Width="20" />
+                        <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="Remove" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+            
             <StackPanel Orientation="Horizontal" Margin="0 25 0 0">
                 <Button Style="{DynamicResource AppButton}" Command="{Binding Path=FolderBrowserDialogCommand}">
                     <StackPanel Orientation="Horizontal">
@@ -22,14 +47,14 @@
                         <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="Select folder" />
                     </StackPanel>
                 </Button>
-                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10 0 0 0" FontSize="14" ToolTip="{Binding Path=PdfData.PathToFolder}" Text="{Binding Path=PathToFolder}" />
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10 0 0 0" FontSize="14" ToolTip="{Binding Path=PdfData.PathToFolder}" Text="{Binding Path=PdfData.ShortPathToFolder}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
                 <TextBlock VerticalAlignment="Center" Margin="1 0 0 0" FontSize="14" Text="Count of PDF files:" />
                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10 0 0 0" FontSize="14" Text="{Binding Path=PdfData.CountFiles}" />
             </StackPanel>
 
-            <Border Margin="0 25 0 0" Height="200" BorderThickness="3" BorderBrush="#2E2E2E" CornerRadius="4">
+            <Border Margin="0 25 0 0" Height="155" BorderThickness="3" BorderBrush="#2E2E2E" CornerRadius="4">
                 <DataGrid ItemsSource="{Binding PdfData.ImgData}" Margin="4" AutoGenerateColumns="False" CanUserAddRows="False" CanUserSortColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False" IsReadOnly="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden" ColumnHeaderStyle="{DynamicResource AppDataGridColumnHeader}" RowStyle="{DynamicResource AppDataGridRow}" CellStyle="{DynamicResource AppDataGridCell}">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="Name:" Width="245">
@@ -75,10 +100,10 @@
         </StackPanel>
 
         <StackPanel Grid.Row="1">
-            <Button Style="{DynamicResource AppButton}" Background="#FF5722"  Command="{Binding Path=AddImagesToPdfCommand}">
+            <Button Style="{DynamicResource AppButton}" Background="#FF5722" Command="{Binding Path=AddImagesToPdfCommand}">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="CogPlay" VerticalAlignment="Center" Height="20" Width="20" />
-                    <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="Execute tasks" />
+                    <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="Execute" />
                 </StackPanel>
             </Button>
         </StackPanel>

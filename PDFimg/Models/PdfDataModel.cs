@@ -34,6 +34,13 @@ namespace PDFimg.Models
             set { SetProperty(ref _pathToFolder, value); }
         }
 
+        private string _shortPathToFolder = default!;
+        public string ShortPathToFolder
+        {
+            get { return _shortPathToFolder; }
+            set { SetProperty(ref _shortPathToFolder, value); }
+        }
+
         private ICollection<string> _files = default!;
         public ICollection<string> Files
         {

@@ -20,6 +20,7 @@ namespace PDFimg
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterDialog<ImgDataView, ImgDataViewModel>("ImgDataDialog");
+            containerRegistry.RegisterDialog<JsonSaveView, JsonSaveViewModel>("JsonSaveDialog");
         }
     }
 }

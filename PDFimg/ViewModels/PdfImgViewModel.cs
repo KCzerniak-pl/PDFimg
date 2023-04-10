@@ -24,11 +24,13 @@ namespace PDFimg.ViewModels
             _dialogService = dialogService;
 
             PdfData = new PdfDataModel();
+            PdfData.ShortPathToFolder = "Click the button to select a folder containing PDF files.";
 
+            PathToJsonFiles = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "json");
             GetJsonFilesWithPdfData();
         }
 
-        private string _pathToJsonFiles = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "json");
+        private string _pathToJsonFiles = default!;
         public string PathToJsonFiles
         {
             get { return _pathToJsonFiles; }
@@ -49,7 +51,10 @@ namespace PDFimg.ViewModels
             set
             {
                 SetProperty(ref _selectedJsonFile, value);
-                GetDataFromJsonFile(SelectedJsonFile.Guid);
+                if (_selectedJsonFile != null)
+                {
+                    GetDataFromJsonFile();
+                }
             }
         }
 
@@ -57,14 +62,7 @@ namespace PDFimg.ViewModels
         public PdfDataModel PdfData
         {
             get { return _pdfData; }
-            set { SetProperty(ref _pdfData, value); RaisePropertyChanged(); }
-        }
-
-        private string _pathToFolder = "Click the button to select a folder containing PDF files.";
-        public string PathToFolder
-        {
-            get { return _pathToFolder; }
-            set { SetProperty(ref _pathToFolder, value); }
+            set { SetProperty(ref _pdfData, value); }
         }
 
         private bool _isEnabledAddImagesToPdf = false;
@@ -94,6 +92,18 @@ namespace PDFimg.ViewModels
         private ICommand? _addImagesToPdfCommand;
         public ICommand AddImagesToPdfCommand { get => _addImagesToPdfCommand ?? (_addImagesToPdfCommand = new DelegateCommand(ExecuteAddImagesToPdf).ObservesCanExecute(() => IsEnabledAddImagesToPdf)); }
 
+        // Button to save JSON file.
+        private ICommand? _jsonSaveAsCommand;
+        public ICommand JsonSaveAsCommand { get => _jsonSaveAsCommand ?? (_jsonSaveAsCommand = new DelegateCommand(ExecuteJsonSaveAs)); }
+
+        // Button to update JSON file.
+        private ICommand? _jsonUpdateCommand;
+        public ICommand JsonUpdateCommand { get => _jsonUpdateCommand ?? (_jsonUpdateCommand = new DelegateCommand(ExecuteJsonUpdate, CanExecuteJsonUpdateOrRemove).ObservesProperty(() => SelectedJsonFile)); }
+
+        // Button to remove JSON file.
+        private ICommand? _jsonRemoveCommand;
+        public ICommand JsonRemoveCommand { get => _jsonRemoveCommand ?? (_jsonRemoveCommand = new DelegateCommand(ExecuteJsonRemove, CanExecuteJsonUpdateOrRemove).ObservesProperty(() => SelectedJsonFile)); }
+
         // Folder browser dialog.
         private void ExecuteFolderBrowserDialog()
         {
@@ -103,7 +113,7 @@ namespace PDFimg.ViewModels
             {
                 // Get path to selected folder.
                 PdfData.PathToFolder = dialog.SelectedPath;
-                PathToFolder = PdfData.PathToFolder.CutString(55);
+                PdfData.ShortPathToFolder = PdfData.PathToFolder.CutString(55);
 
                 // Add PDF from directory to collection.
                 PdfData.Files = Directory.EnumerateFiles(dialog.SelectedPath, "*.pdf", SearchOption.TopDirectoryOnly).ToList();
@@ -179,69 +189,141 @@ namespace PDFimg.ViewModels
             AddImageToPdf.Execute(PdfData.Files, PdfData.ImgData);
         }
 
-        // Get JSON files with data about PDF.
+        // Get JSON files with data about PDF and images.
         private void GetJsonFilesWithPdfData()
+        {
+            if (Directory.Exists(PathToJsonFiles))
+            {
+                JsonFilesCollection = new List<JsonDataModel>();
+
+                // Add JSON file from directory to collection.
+                IEnumerable<string> files = Directory.EnumerateFiles(PathToJsonFiles, "*.json", SearchOption.TopDirectoryOnly);
+
+                foreach (string file in files)
+                {
+                    string jsonFile = File.ReadAllText(file);
+                    JsonDataModel jsonData = JsonSerializer.Deserialize<JsonDataModel>(jsonFile)!;
+                    JsonFilesCollection.Add(jsonData);
+                }
+            }
+        }
+
+        // Save data to a new JSON file.
+        private void ExecuteJsonSaveAs()
+        {
+            // Create parameters.
+            var parameters = new DialogParameters();
+            parameters.Add("Title", "Save data");
+
+            // Open modal dialog.
+            _dialogService.ShowDialog("JsonSaveDialog", parameters, callback =>
+            {
+                if (callback.Result == ButtonResult.OK)
+                {
+                    PdfData.Name = callback.Parameters.GetValue<string>("Name");
+                    PdfData.Guid = Guid.NewGuid();
+                    if (!string.IsNullOrEmpty(PdfData.Name))
+                    {
+                        JsonSave(PdfData.Guid, "Cannot save JSON file.");
+                        GetJsonFilesWithPdfData();
+
+                        SelectedJsonFile = JsonFilesCollection.FirstOrDefault(p => p.Guid == PdfData.Guid)!;
+                    }
+                }
+            });
+        }
+
+        // Update chosen JSON file.
+        private void ExecuteJsonUpdate()
+        {
+            if (SelectedJsonFile != null)
+            {
+                JsonSave(SelectedJsonFile.Guid, "Cannot update JSON file.");
+            }
+        }
+
+        // Remove chosen JSON file.
+        private void ExecuteJsonRemove()
+        {
+            var result = MessageBox.Show("Do you want to permanently remove selected data (JSON file)?", "Notice", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                string path = Path.Combine(PathToJsonFiles, $"{SelectedJsonFile.Guid}.json");
+
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                    GetJsonFilesWithPdfData();
+                }
+                else
+                {
+                    MessageBox.Show("Cannot find JSON file to remove.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private bool CanExecuteJsonUpdateOrRemove()
+        {
+            if (SelectedJsonFile == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        // Save data to JSON file.
+        private void JsonSave(Guid guid, string messageBoxText)
         {
             try
             {
-                if (Directory.Exists(PathToJsonFiles))
-                {
-                    JsonFilesCollection = new List<JsonDataModel>();
+                Directory.CreateDirectory(PathToJsonFiles);
 
-                    // Add JSON file from directory to collection.
-                    IEnumerable<string> files = Directory.EnumerateFiles(PathToJsonFiles, "*.json", SearchOption.TopDirectoryOnly);
-
-                    foreach (string file in files)
-                    {
-                        try
-                        {
-                            string jsonFile = File.ReadAllText(file);
-                            JsonDataModel jsonData = JsonSerializer.Deserialize<JsonDataModel>(jsonFile)!;
-                            JsonFilesCollection.Add(jsonData);
-                        }
-                        catch (Exception)
-                        {
-                            MessageBox.Show("Cannot read JSON file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
-                    }
-                }
+                // Serializing the object to a JSON file.
+                string json = JsonSerializer.Serialize(PdfData, new JsonSerializerOptions() { WriteIndented = true });
+                string path = Path.Combine(PathToJsonFiles, $"{guid}.json");
+                File.WriteAllText(path, json);
             }
             catch (Exception)
             {
-                MessageBox.Show("Cannot read JSON files.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(messageBoxText, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         // Get data from chosen JSON file.
-        private void GetDataFromJsonFile(Guid guid)
+        private void GetDataFromJsonFile()
         {
-            string path = Path.Combine(PathToJsonFiles, $"{guid}.json");
+            string path = Path.Combine(PathToJsonFiles, $"{SelectedJsonFile.Guid}.json");
 
             if (File.Exists(path))
             {
                 PdfData = new PdfDataModel();
 
-                try
-                {
-                    // Get data from JSON file.
-                    string jsonFile = File.ReadAllText(path);
-                    PdfData = JsonSerializer.Deserialize<PdfDataModel>(jsonFile)!;
+                // Get data from JSON file.
+                string jsonFile = File.ReadAllText(path);
+                PdfData = JsonSerializer.Deserialize<PdfDataModel>(jsonFile)!;
 
+                if (!string.IsNullOrEmpty(PdfData.PathToFolder))
+                {
                     // Add PDF from directory to collection.
                     PdfData.Files = Directory.EnumerateFiles(PdfData.PathToFolder, "*.pdf", SearchOption.TopDirectoryOnly).ToList();
+
+                    // Create short path.
+                    PdfData.ShortPathToFolder = PdfData.PathToFolder.CutString(55);
+
+                    // Count elements in collection.
+                    PdfData.CountFiles = PdfData.Files.Count();
                 }
-                catch (Exception)
+                else
                 {
-                    MessageBox.Show("Cannot read chosen JSON file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    PdfData.ShortPathToFolder = "Click the button to select a folder containing PDF files.";
                 }
-
-                // Create short path.
-                PathToFolder = PdfData.PathToFolder.CutString(55);
-
-                // Count elements in collection.
-                PdfData.CountFiles = PdfData.Files.Count();
 
                 SetEnabledAddImagesToPdf();
+            }
+            else
+            {
+                MessageBox.Show("Cannot find chosen JSON file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
