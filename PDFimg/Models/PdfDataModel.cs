@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.Json.Serialization;
 
 namespace PDFimg.Models
 {
@@ -35,6 +36,7 @@ namespace PDFimg.Models
         }
 
         private string _shortPathToFolder = default!;
+        [JsonIgnore]
         public string ShortPathToFolder
         {
             get { return _shortPathToFolder; }
@@ -42,6 +44,7 @@ namespace PDFimg.Models
         }
 
         private ICollection<string> _files = default!;
+        [JsonIgnore]
         public ICollection<string> Files
         {
             get { return _files; }
@@ -49,6 +52,7 @@ namespace PDFimg.Models
         }
 
         private int _countFiles = default!;
+        [JsonIgnore]
         public int CountFiles
         {
             get { return _countFiles; }

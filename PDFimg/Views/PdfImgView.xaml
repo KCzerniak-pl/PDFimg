@@ -22,19 +22,19 @@
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Style="{DynamicResource AppButton}" Command="{Binding Path=JsonSaveAsCommand}">
                     <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="CogPlay" VerticalAlignment="Center" Height="20" Width="20" />
+                        <materialDesign:PackIcon Kind="FileDocumentAdd" VerticalAlignment="Center" Height="20" Width="20" />
                         <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="Save as" />
                     </StackPanel>
                 </Button>
                 <Button Grid.Column="1" Style="{DynamicResource AppButton}" Command="{Binding Path=JsonUpdateCommand}">
                     <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="CogPlay" VerticalAlignment="Center" Height="20" Width="20" />
+                        <materialDesign:PackIcon Kind="FileEdit" VerticalAlignment="Center" Height="20" Width="20" />
                         <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="Update" />
                     </StackPanel>
                 </Button>
                 <Button Grid.Column="2" Style="{DynamicResource AppButton}" Command="{Binding Path=JsonRemoveCommand}">
                     <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="CogPlay" VerticalAlignment="Center" Height="20" Width="20" />
+                        <materialDesign:PackIcon Kind="FileDocumentRemove" VerticalAlignment="Center" Height="20" Width="20" />
                         <TextBlock Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="Remove" />
                     </StackPanel>
                 </Button>
