@@ -5,10 +5,15 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>pdfimg.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="ViewModels\PdfImgViewModel.cs~RF3290168.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="pdfimg.ico" />
   </ItemGroup>
 
   <ItemGroup>
